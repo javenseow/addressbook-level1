@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Random;
 
 /*
  * NOTE : =============================================================
@@ -66,6 +67,7 @@ public class AddressBook {
      * =========================================================================
      */
     private static final String MESSAGE_ADDED = "New person added: %1$s, Phone: %2$s, Email: %3$s";
+    private static final String MESSAGE_CHAT = "Try chatting with %1$s at %2$s";
     private static final String MESSAGE_ADDRESSBOOK_CLEARED = "Address book has been cleared!";
     private static final String MESSAGE_COMMAND_HELP = "%1$s: %2$s";
     private static final String MESSAGE_COMMAND_HELP_PARAMETERS = "\tParameters: %1$s";
@@ -132,6 +134,8 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+
+    private static final String COMMAND_CHAT_WORD = "chat";
 
     private static final String DIVIDER = "===================================================";
 
@@ -383,9 +387,40 @@ public class AddressBook {
             return getUsageInfoForAllCommands();
         case COMMAND_EXIT_WORD:
             executeExitProgramRequest();
+        case COMMAND_CHAT_WORD:
+            return executeFindRandomNumber();
         default:
             return getMessageForInvalidCommandInput(commandType, getUsageInfoForAllCommands());
         }
+    }
+
+    /**
+     * Returns a random person's name and number.
+     */
+    private static String executeFindRandomNumber() {
+        int max = ALL_PERSONS.size();
+        int randomInt = randInt(max);
+        return getMessageForChat(randomInt);
+    }
+
+    /**
+     * Formats the reply message with the name and phone number
+     * of randomly chosen person.
+     * @param randomInt person chosen to recommend to chat with
+     */
+    private static String getMessageForChat(int randomInt) {
+        return String.format(MESSAGE_CHAT, getNameFromPerson(ALL_PERSONS.get(randomInt)),
+                getPhoneFromPerson(ALL_PERSONS.get(randomInt)));
+    }
+
+    /**
+     * Returns a random number between 0(inclusive) and the
+     * size of the address book(exclusive).
+     * @param max the size of the address book currently.
+     */
+    private static int randInt(int max) {
+        Random rand = new Random();
+        return rand.nextInt(max);
     }
 
     /**
